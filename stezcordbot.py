@@ -1,8 +1,9 @@
 import json
-import discord
+from discord.ext import commands
 import random
+from vesmir import vesmir_cmd
 
-client = discord.Client()
+client = commands.Bot(command_prefix=".")
 
 with open("emojis.txt") as f:
     emojis = f.read().split(" ")
@@ -18,25 +19,34 @@ async def mark_random_emoji(message):
 
 @client.event
 async def on_message(message):
-    mark = mark_random_emoji(message)
+    a = client.process_commands(message)
+    b = custom_on_message(message)
+    await a
+    await b
     
+async def custom_on_message(message):
+    return
     if message.author == client.user:
         return
+    await mark_random_emoji(message)
+
+@client.command()
+async def ahoj(ctx, *args):
+    await ctx.channel.send(f"Ahoj!\n{args}")
     
-    if message.content.startswith('$ahoj'):
-        await message.channel.send("Ahoj!")
-        
-    if message.content.startswith('$mark'):
-        messages = await message.channel.history(limit=200).flatten()
-        for msg in messages:
-            await mark_random_emoji(msg)
+@client.command()
+async def vesmir(ctx):
+    await vesmir_cmd(ctx)
 
-    await mark
-
+@client.command()
+async def mark(ctx):
+    messages = await ctx.channel.history(limit=10).flatten()
+    for msg in messages:
+        await mark_random_emoji(msg)
 
 #@client.event
 #async def on_ready():
-    #fp = open("stezbot_500.png", 'rb')
+    #fp = open("stezbot_fang_500.png", 'rb')
     #pfp = fp.read()
     #await client.user.edit(avatar=pfp)
     
