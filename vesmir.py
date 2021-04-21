@@ -13,27 +13,31 @@ def parse_msg(ctx):
     name = get_name(ctx)
     distance = get_distance(msg)
     comment = get_comment(msg)
+    means_of_transport = get_means_of_transport(msg)
     
     return {
         "name": name,
         "distance": distance,
         "comment": comment,
+        "means of transport": means_of_transport
     }
 
 trdict = {
-    
+    "xkrumlov": "Vlk"
 }
 
 def get_name(ctx):
-    name = ctx.author.name
-    if name in trdict:
-        return trdict[name]
-    nick = ctx.author.nick
+    person = ctx.author
+    if len(ctx.message.mentions) > 0:
+        person = ctx.message.mentions[0]
+    if person.name in trdict:
+        return trdict[person.name]
+    nick = person.nick
     if nick:
         if nick in trdict:
             return trdict[nick]
         return nick
-    return name
+    return person.name
 
 def get_distance(msg):
     mul = 1
@@ -51,6 +55,16 @@ def get_comment(msg):
     if not comment:
         return None
     return comment
+
+def get_means_of_transport(msg):
+    if re.search("(?:kolobez|koloběž)", msg):
+        return "koloběžka"
+    if re.search("kol", msg):
+        return "kolo"
+    if re.search("brusl", msg):
+        return "brusle"
+    return "pěšky"
+
 
 def send_request(data):
     responseurl = 'https://docs.google.com/forms/d/e/1FAIpQLScyghg2oS4cNLn5IUQJsCJystde-xPB1aESiAARh3alRK0d4A/formResponse'
