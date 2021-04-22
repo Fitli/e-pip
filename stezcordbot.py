@@ -1,7 +1,7 @@
 import json
 from discord.ext import commands
 import random
-from vesmir import vesmir_cmd
+from vesmir import vesmir_cmd, vesmir_reaction_add
 
 client = commands.Bot(command_prefix=".")
 
@@ -29,6 +29,10 @@ async def custom_on_message(message):
     if message.author == client.user:
         return
     await mark_random_emoji(message)
+
+@client.event
+async def on_reaction_add(reaction, user):
+    await vesmir_reaction_add(reaction, user)
 
 @client.command()
 async def ahoj(ctx, *args):

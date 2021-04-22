@@ -1,11 +1,37 @@
+from typing import Union
+
+import discord
 import requests
 import re
 import pprint
 
+MEANSDICT = {
+    '🚶': "pěšky",
+    '🚴🏼': "kolo",
+    '🛴': "koloběžka",
+    '🛼': "brusle",
+    '🏊': "plavání",
+}
+
 async def vesmir_cmd(ctx):
     data = parse_msg(ctx)
-    msg = f"Našel jsem:\n{pprint.pformat(data)}"
-    await ctx.channel.send(msg)
+    await send_data(data, ctx)
+    #msg = f"Našel jsem:\n{pprint.pformat(data)}"
+    #await ctx.channel.send(msg)
+
+
+async def send_data(data, ctx):
+    embed = discord.Embed(title="Rozpoznal jsem aktivitu", colour=discord.Colour.green())
+    embed.add_field(name="Pohybující se osoba", value=data["name"])
+    embed.add_field(name="Vzdálenost", value=data["distance"])
+    embed.add_field(name="Způsob přepravy", value=data["means of transport"])
+    embed.add_field(name="Komentář", value=data["comment"], inline=False)
+    embed.set_footer(text="Pro změnu typu přepravy použij reakci")
+    msg = await ctx.channel.send(embed=embed)
+    for emoji in MEANSDICT:
+        await msg.add_reaction(emoji=emoji)
+    await msg.add_reaction(emoji='❌')
+
 
 def parse_msg(ctx):
     msg = ctx.message.content
@@ -23,7 +49,10 @@ def parse_msg(ctx):
     }
 
 trdict = {
-    "xkrumlov": "Vlk"
+    "xkrumlov": "Vlk",
+    "Drakis": "Zuby",
+    "Targus": "Ledy",
+    "pes": "Ola"
 }
 
 def get_name(ctx):
@@ -63,7 +92,28 @@ def get_means_of_transport(msg):
         return "kolo"
     if re.search("brusl", msg):
         return "brusle"
+    if re.search("plav", msg):
+        return "plavání"
     return "pěšky"
+
+
+async def vesmir_reaction_add(reaction: discord.Reaction, user: Union[discord.Member, discord.User]):
+    msg = reaction.message
+    if msg.author.name != "Stezcord-bot": #TODO: better check of message
+        return
+    if user.name == "Stezcord-bot": #TODO: only author of activity can react
+        return
+    emoji = reaction.emoji
+    if emoji in MEANSDICT:
+        embed = msg.embeds[0]
+        embed.set_field_at(2, name="Způsob přepravy", value=MEANSDICT[emoji])
+        await msg.edit(embed=embed)
+        await reaction.remove(user)
+        return
+    if emoji == '❌':
+        await msg.delete()
+        return
+    await reaction.remove(user)
 
 
 def send_request(data):
