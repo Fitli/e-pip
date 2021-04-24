@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Union
+from typing import Union, List
 
 import random
 import discord
@@ -9,7 +9,7 @@ import re
 
 open_actions = {}
 
-
+CHANNEL_NAME = "obecné"
 MEANS_DICT = {
     '🚶': "pěšky",
     '🚴🏼': "kolo",
@@ -21,14 +21,15 @@ MEANS_DICT = {
 MOTIVATION_QUOTES = [
     "Blížíme se k Měsíci!",
     "Země za zády je čím dál menší!",
-    "Doufám, že tě z toho moc nebolí nohy."
+    "Doufám, že tě z toho moc nebolí nohy.",
+    "Upravujeme kurz."
 ]
 
 
 class Action:
-    def __init__(self, name: str, distance: float, comment: str, means_of_transport: str,
+    def __init__(self, names: List[str], distance: float, comment: str, means_of_transport: str,
                  activity_date: date, ctx, author: discord.abc.User):
-        self.name = name
+        self.names = names
         self.distance = distance
         self.comment = comment
         self.means = means_of_transport
@@ -39,7 +40,10 @@ class Action:
 
     async def send_embed(self):
         embed = discord.Embed(title="Rozpoznal jsem aktivitu", colour=discord.Colour.gold())
-        embed.add_field(name="Pohybující se osoba", value=self.name)
+        if len(self.names) == 1:
+            embed.add_field(name="Pohybující se osoba", value=self.names[0])
+        else:
+            embed.add_field(name="Pohybující se osoby", value=", ".join(self.names))
         embed.add_field(name="Vzdálenost", value=str(self.distance))
         embed.add_field(name="Způsob přepravy", value=self.means)
         embed.add_field(name="Datum", value=self.date.strftime("%-d. %-m."))
@@ -56,7 +60,7 @@ class Action:
 
     async def reaction_add(self, reaction: discord.Reaction,
                            user: Union[discord.Member, discord.User]):
-        if user.name == "Stezcord-bot":
+        if user == self.ctx.me:
             return
         if user != self.author:
             await reaction.remove(user)
@@ -83,31 +87,35 @@ class Action:
         embed.colour = discord.Colour.blue()
         embed.set_footer(text=random.choice(MOTIVATION_QUOTES))
         await self.msg.edit(embed=embed)
+        await self.msg.clear_reactions()
         open_actions.pop(self.msg.id)
 
     def send_request(self):
         responseurl = 'https://docs.google.com/forms/d/e/1FAIpQLScyghg2oS4cNLn5IUQJsCJystde-xPB1aESiAARh3alRK0d4A/formResponse'
-        form_data = {
-            "entry.2090870317": self.name,  # Name
-            "entry.900912904": self.distance,  # distance [km]
-            "entry.1648102255": self.comment,  # comment
-            "entry.1060833824_year": self.date.year,
-            "entry.1060833824_month": self.date.month,
-            "entry.1060833824_day": self.date.day,
-            "entry.1318492768": self.means,
-            "fvv": 1,
-            "draftResponse": [],
-            "pageHistory": 0,
-            "fbzx": 5173863167218276264,
-            # "entry.1318492768_sentinel": "",
-        }
+        for name in self.names:
+            form_data = {
+                "entry.2090870317": name,  # Name
+                "entry.900912904": str(self.distance).replace(".", ","),  # distance [km]
+                "entry.1648102255": self.comment,  # comment
+                "entry.1060833824_year": self.date.year,
+                "entry.1060833824_month": self.date.month,
+                "entry.1060833824_day": self.date.day,
+                "entry.1318492768": self.means,
+                "fvv": 1,
+                "draftResponse": [],
+                "pageHistory": 0,
+                "fbzx": 5173863167218276264,
+                # "entry.1318492768_sentinel": "",
+            }
 
-        res = requests.post(responseurl, data=form_data)
-        print(res)
+            res = requests.post(responseurl, data=form_data)
+            print(res)
         # print(res.text)
 
 
 async def vesmir_cmd(ctx):
+    if ctx.channel.name != CHANNEL_NAME:
+        return
     action = parse_msg(ctx)
     await action.send_embed()
 
@@ -129,14 +137,22 @@ trdict = {
     "xkrumlov": "Vlk",
     "Drakis": "Zuby",
     "Targus": "Ledy",
-    "pes": "Ola"
+    "pes": "Ola",
+    "Wudiap": "Kulihrášek",
+    "Atom": "Ota",
+    "MRQA": "Mrqa",
+    "TAKY": "Taky"
 }
 
 
 def get_name(ctx):
-    person = ctx.author
+    persons = [ctx.author]
     if len(ctx.message.mentions) > 0:
-        person = ctx.message.mentions[0]
+        persons = ctx.message.mentions
+    return [name_from_user(p) for p in persons]
+
+
+def name_from_user(person):
     if person.name in trdict:
         return trdict[person.name]
     nick = person.nick
