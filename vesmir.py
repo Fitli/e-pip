@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 from typing import Union
 
+import random
 import discord
 import requests
 import re
@@ -16,6 +17,12 @@ MEANS_DICT = {
     '🛼': "brusle",
     '🏊': "plavání",
 }
+
+MOTIVATION_QUOTES = [
+    "Blížíme se k Měsíci!",
+    "Země za zády je čím dál menší!",
+    "Doufám, že tě z toho moc nebolí nohy."
+]
 
 
 class Action:
@@ -35,7 +42,7 @@ class Action:
         embed.add_field(name="Pohybující se osoba", value=self.name)
         embed.add_field(name="Vzdálenost", value=str(self.distance))
         embed.add_field(name="Způsob přepravy", value=self.means)
-        embed.add_field(name="Datum", value=str(self.date))
+        embed.add_field(name="Datum", value=self.date.strftime("%-d. %-m."))
         embed.add_field(name="Komentář", value=self.comment, inline=False)
         embed.set_footer(text="Pro změnu typu přepravy použij reakci.\n"
                               + "Pomocí ❌ můžeš aktivitu zrušit, pomocí 🚀 odeslat")
@@ -74,7 +81,7 @@ class Action:
         embed = self.msg.embeds[0]
         embed.title = "Odeslal jsem aktivitu"
         embed.colour = discord.Colour.blue()
-        embed.set_footer(text="Blížíme se k měsíci!")
+        embed.set_footer(text=random.choice(MOTIVATION_QUOTES))
         await self.msg.edit(embed=embed)
         open_actions.pop(self.msg.id)
 
