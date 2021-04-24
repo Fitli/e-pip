@@ -117,7 +117,8 @@ async def vesmir_cmd(ctx):
     if ctx.channel.name != CHANNEL_NAME:
         return
     action = parse_msg(ctx)
-    await action.send_embed()
+    if action:
+        await action.send_embed()
 
 
 def parse_msg(ctx):
@@ -126,9 +127,20 @@ def parse_msg(ctx):
     
     name = get_name(ctx)
     distance = get_distance(msg)
+    if distance is None:
+        ctx.channel.send("Nikde tu nevidím vzdálenost :sadKuli:")
+        return None
     comment = get_comment(msg)
     means_of_transport = get_means_of_transport(msg)
     activity_date = get_date(msg)
+    if activity_date < date(2021, 4, 14):
+        ctx.channel.send(f"Tak hele mantáku, datum {activity_date.strftime('%-d. %-m. %y')} je před "
+                         f"začátkem výzvy, to se nepočítá")
+        return None
+    if activity_date > date(2021, 4, 14):
+        ctx.channel.send(f"{activity_date.strftime('%-d. %-m. %y')}? Jestli máš stroj času, nech "
+                         f"mě taky projet, chtěl bych vidět roboty za 100 let")
+        return None
     
     return Action(name, distance, comment, means_of_transport, activity_date, ctx, author)
 
