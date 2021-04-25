@@ -153,7 +153,8 @@ trdict = {
     "Wudiap": "Kulihrášek",
     "Atom": "Ota",
     "MRQA": "Mrqa",
-    "TAKY": "Taky"
+    "TAKY": "Taky",
+    "Elis": "Eliška"
 }
 
 
