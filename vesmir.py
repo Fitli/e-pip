@@ -177,10 +177,10 @@ def name_from_user(person):
 
 def get_distance(msg):
     mul = 1
-    match = re.search("([0-9]+(?:.|,)?[0-9]*) (?:km|kilometr)", msg)
+    match = re.search("([0-9]+(?:.|,)?[0-9]*) *(?:km\b|kilometr)", msg)
     if not match:
         mul = 1000
-        match = re.search("([0-9]+(?:.|,)?[0-9]*) (?:m|metr)", msg)
+        match = re.search("([0-9]+(?:.|,)?[0-9]*) *(?:m\b|metr)", msg)
     if not match:
         return None
     d = match.group(1)
@@ -195,9 +195,9 @@ def get_comment(msg):
 
 
 def get_means_of_transport(msg):
-    if re.search("(?:kolobez|koloběž)", msg):
+    if re.search("(kolobez|koloběž)", msg):
         return "koloběžka"
-    if re.search("kol", msg):
+    if re.search(r"(\bkol(e(?!m)|o)|cykl)", msg):
         return "kolo"
     if re.search("brusl", msg):
         return "brusle"
@@ -213,9 +213,18 @@ def get_date(msg):
         return date.today() - timedelta(days=1)
     if re.search("předevčírem|predevcirem", msg):
         return date.today() - timedelta(days=2)
-    match = re.search("([0-9]{1,2}). ([0-9]{1,2}).", msg)
+    match = re.search("([0-9]{1,2}). *([0-9]{1,2}).", msg)
     if match:
         return date(2021, int(match.group(2)), int(match.group(1)))
+    match = re.search("([0-9]{1,2}). *dubna", msg)
+    if match:
+        return date(2021, 4, int(match.group(1)))
+    match = re.search("([0-9]{1,2}). *(května|kvetna)", msg)
+    if match:
+        return date(2021, 5, int(match.group(1)))
+    match = re.search("([0-9]{1,2}). *(června|cervna)", msg)
+    if match:
+        return date(2021, 6, int(match.group(1)))
     return date.today()
 
 
