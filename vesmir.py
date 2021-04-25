@@ -9,7 +9,7 @@ import re
 
 open_actions = {}
 
-CHANNEL_NAME = "obecné"
+CHANNEL_NAME = "pionýři-do-vemíru"
 MEANS_DICT = {
     '🚶': "pěšky",
     '🚴🏼': "kolo",
@@ -81,7 +81,7 @@ class Action:
         await reaction.remove(user)
 
     async def send(self):
-        #self.send_request()
+        self.send_request()
         embed = self.msg.embeds[0]
         embed.title = "Odeslal jsem aktivitu"
         embed.colour = discord.Colour.blue()
