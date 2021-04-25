@@ -177,10 +177,10 @@ def name_from_user(person):
 
 def get_distance(msg):
     mul = 1
-    match = re.search("([0-9]+(?:.|,)?[0-9]*) *(?:km\b|kilometr)", msg)
+    match = re.search(r"([0-9]+(?:.|,)?[0-9]*) *(?:km\b|kilometr)", msg)
     if not match:
         mul = 1000
-        match = re.search("([0-9]+(?:.|,)?[0-9]*) *(?:m\b|metr)", msg)
+        match = re.search(r"([0-9]+(?:.|,)?[0-9]*) *(?:m\b|metr)", msg)
     if not match:
         return None
     d = match.group(1)
