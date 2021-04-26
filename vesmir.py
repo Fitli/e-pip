@@ -11,11 +11,11 @@ open_actions = {}
 
 CHANNEL_NAME = "pionýři-do-vemíru"
 MEANS_DICT = {
-    '🚶': "pěšky",
-    '🚴🏼': "kolo",
-    '🛴': "koloběžka",
-    '🛼': "brusle",
-    '🏊': "plavání",
+    '🚶': "Pěšky",
+    '🚴🏼': "Kolo",
+    '🛴': "Koloběžka",
+    '🛼': "Brusle",
+    '🏊': "Plavání",
 }
 
 MOTIVATION_QUOTES = [
@@ -122,7 +122,7 @@ async def vesmir_cmd(ctx):
 
 
 async def parse_msg(ctx):
-    msg = ctx.message.content
+    msg = ctx.message.content.lower
     author = ctx.message.author
     
     name = get_name(ctx)
@@ -197,14 +197,14 @@ def get_comment(msg):
 
 def get_means_of_transport(msg):
     if re.search(r"(\bkolobez|\bkoloběž)", msg):
-        return "koloběžka"
+        return "Koloběžka"
     if re.search(r"(\bkol(e(?!m)|o)|cykl)", msg):
-        return "kolo"
+        return "Kolo"
     if re.search("brusl", msg):
-        return "brusle"
+        return "Brusle"
     if re.search("plav", msg):
-        return "plavání"
-    return "pěšky"
+        return "Plavání"
+    return "Pěšky"
 
 
 def get_date(msg):
