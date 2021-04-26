@@ -210,10 +210,10 @@ def get_means_of_transport(msg):
 def get_date(msg):
     if re.search("dnes", msg):
         return date.today()
-    if re.search("včera|vcera", msg):
-        return date.today() - timedelta(days=1)
-    if re.search("předevčírem|predevcirem", msg):
+    if re.search("předevčírem|predevcirem|předvčer|predvcer", msg):
         return date.today() - timedelta(days=2)
+    if re.search("včer|vcer", msg):
+        return date.today() - timedelta(days=1)
     match = re.search("([0-9]{1,2}). *([0-9]{1,2}).", msg)
     if match:
         return date(2021, int(match.group(2)), int(match.group(1)))
