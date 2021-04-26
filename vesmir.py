@@ -9,7 +9,7 @@ import re
 
 open_actions = {}
 
-CHANNEL_NAME = "pionýři-do-vemíru"
+CHANNEL_NAME = "pionýři-do-vesmíru"
 MEANS_DICT = {
     '🚶': "Pěšky",
     '🚴🏼': "Kolo",
@@ -122,7 +122,7 @@ async def vesmir_cmd(ctx):
 
 
 async def parse_msg(ctx):
-    msg = ctx.message.content.lower
+    msg = ctx.message.content.lower()
     author = ctx.message.author
     
     name = get_name(ctx)
