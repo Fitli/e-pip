@@ -214,16 +214,16 @@ def get_date(msg):
         return date.today() - timedelta(days=2)
     if re.search("včer|vcer", msg):
         return date.today() - timedelta(days=1)
-    match = re.search("([0-9]{1,2}). *([0-9]{1,2}).", msg)
+    match = re.search(r"([0-9]{1,2})\. *([0-9]{1,2})\.", msg)
     if match:
         return date(2021, int(match.group(2)), int(match.group(1)))
-    match = re.search("([0-9]{1,2}). *dubna", msg)
+    match = re.search(r"([0-9]{1,2})\. *dubna", msg)
     if match:
         return date(2021, 4, int(match.group(1)))
-    match = re.search("([0-9]{1,2}). *(května|kvetna)", msg)
+    match = re.search(r"([0-9]{1,2})\. *(května|kvetna)", msg)
     if match:
         return date(2021, 5, int(match.group(1)))
-    match = re.search("([0-9]{1,2}). *(června|cervna)", msg)
+    match = re.search(r"([0-9]{1,2})\. *(června|cervna)", msg)
     if match:
         return date(2021, 6, int(match.group(1)))
     return date.today()
