@@ -47,7 +47,6 @@ class Action:
         embed.add_field(name="Vzdálenost", value=str(self.distance))
         embed.add_field(name="Způsob přepravy", value=self.means)
         embed.add_field(name="Datum", value=self.date.strftime("%-d. %-m."))
-        embed.add_field(name="Komentář", value=self.comment, inline=False)
         embed.set_footer(text="Pro změnu typu přepravy použij reakci.\n"
                               + "Pomocí ❌ můžeš aktivitu zrušit, pomocí 🚀 odeslat")
         msg = await self.ctx.channel.send(embed=embed)
