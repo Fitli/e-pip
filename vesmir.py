@@ -196,7 +196,7 @@ def get_comment(msg):
 
 
 def get_means_of_transport(msg):
-    if re.search("(kolobez|koloběž)", msg):
+    if re.search(r"(\bkolobez|\bkoloběž)", msg):
         return "koloběžka"
     if re.search(r"(\bkol(e(?!m)|o)|cykl)", msg):
         return "kolo"
@@ -208,11 +208,11 @@ def get_means_of_transport(msg):
 
 
 def get_date(msg):
-    if re.search("dnes", msg):
+    if re.search(r"\bdnes", msg):
         return date.today()
-    if re.search("předevčírem|predevcirem|předvčer|predvcer", msg):
+    if re.search(r"\bpředevčírem\b|\bpredevcirem\b|\bpředvčer|\bpredvcer", msg):
         return date.today() - timedelta(days=2)
-    if re.search("včer|vcer", msg):
+    if re.search("\bvčer|\bvcer", msg):
         return date.today() - timedelta(days=1)
     match = re.search(r"([0-9]{1,2})\. *([0-9]{1,2})\.", msg)
     if match:
