@@ -211,7 +211,7 @@ def get_date(msg):
         return date.today()
     if re.search(r"\bpředevčírem\b|\bpredevcirem\b|\bpředvčer|\bpredvcer", msg):
         return date.today() - timedelta(days=2)
-    if re.search("\bvčer|\bvcer", msg):
+    if re.search(r"\bvčer|\bvcer", msg):
         return date.today() - timedelta(days=1)
     match = re.search(r"([0-9]{1,2})\. *([0-9]{1,2})\.", msg)
     if match:
