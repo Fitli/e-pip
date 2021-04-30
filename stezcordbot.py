@@ -1,4 +1,6 @@
 import json
+import sys
+
 from discord.ext import commands
 import random
 from vesmir import vesmir_cmd, vesmir_reaction_add
@@ -40,7 +42,7 @@ async def on_reaction_add(reaction, user):
 async def ahoj(ctx, *args):
     await ctx.channel.send(f"Ahoj!\n{args}")
     
-@client.command()
+@client.command(aliases=['vesmír'])
 async def vesmir(ctx):
     await vesmir_cmd(ctx)
 
@@ -49,6 +51,13 @@ async def mark(ctx):
     messages = await ctx.channel.history(limit=10).flatten()
     for msg in messages:
         await mark_random_emoji(msg)
+
+@client.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        await ctx.message.channel.send("Tenhle příkaz neznám :sadKuli:")
+    else:
+        print(error, file=sys.stderr)
 
 #@client.event
 #async def on_ready():
