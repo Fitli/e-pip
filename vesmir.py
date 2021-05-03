@@ -66,6 +66,7 @@ class Action:
             return
         emoji = reaction.emoji
         if emoji in MEANS_DICT:
+            self.means = MEANS_DICT[emoji]
             embed = self.msg.embeds[0]
             embed.set_field_at(2, name="Způsob přepravy", value=MEANS_DICT[emoji])
             await self.msg.edit(embed=embed)
