@@ -16,6 +16,7 @@ MEANS_DICT = {
     '🛴': "Koloběžka",
     '🛼': "Brusle",
     '🏊': "Plavání",
+    '🚣': "Loď"
 }
 
 MOTIVATION_QUOTES = [
@@ -204,6 +205,8 @@ def get_means_of_transport(msg):
         return "Brusle"
     if re.search("plav", msg):
         return "Plavání"
+    if re.search(r"\blod|\bloď|pádl", msg):
+        return "Loď"
     return "Pěšky"
 
 
