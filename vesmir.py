@@ -155,7 +155,8 @@ trdict = {
     "Atom": "Ota",
     "MRQA": "Mrqa",
     "TAKY": "Taky",
-    "Elis": "Eliška"
+    "Elis": "Eliška",
+    "Julča": "Ježek"
 }
 
 
