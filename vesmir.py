@@ -142,6 +142,9 @@ async def parse_msg(ctx):
         await ctx.channel.send(f"{activity_date.strftime('%-d. %-m. %Y')}? Jestli máš stroj času, nech "
                                f"mě taky projet, chtěl bych vidět roboty za 100 let")
         return None
+    if activity_date < date(2021, 6, 30):
+        await ctx.channel.send(f"Je mi líto, ale výzva skončila 30. 6. 2021, novější záznamy mám zakázáno zapisovat.")
+        return None
     
     return Action(name, distance, comment, means_of_transport, activity_date, ctx, author)
 
