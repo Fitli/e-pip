@@ -4,6 +4,7 @@ import sys
 from discord.ext import commands
 import random
 from vesmir import vesmir_cmd, vesmir_reaction_add
+from anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
 
 client = commands.Bot(command_prefix=".")
@@ -37,6 +38,14 @@ async def custom_on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
     await vesmir_reaction_add(reaction, user)
+    
+@client.command()
+async def anketa(ctx):
+    await anketa_cmd(ctx)
+
+@client.command()
+async def vote(ctx):
+    await vote_cmd(ctx)
 
 @client.command()
 async def ahoj(ctx, *args):
