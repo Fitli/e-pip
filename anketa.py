@@ -1,12 +1,12 @@
 import re
+import emojis
 
-# I am trying, but I have no idea how to recognize all emojis (both classic and custom) in a message.
-# If somebody knows, please tel me!!
+#
 async def anketa_cmd(ctx):
-    print(ctx.message.content)
-    #emotes = re.findall("/<a?:.+?:\d{18}>|\p{Extended_Pictographic}/gu", ctx.message.content)
-    emotes = re.findall(r'/<a?:.+?:\d*>', ctx.message.content)
-    print(emotes)
+    custom_emotes = re.findall(r'<a?:.+:\d{18}>', ctx.message.content)
+    classic_emotes = list(emojis.get(ctx.message.content))
+    for emote in custom_emotes + classic_emotes:
+        await ctx.message.add_reaction(emoji=emote)
 
 # Simple yes/no vote
 async def vote_cmd(ctx):
