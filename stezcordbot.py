@@ -69,7 +69,7 @@ async def mark(ctx):
     for msg in messages:
         await mark_random_emoji(msg)
 
-@tasks.loop(seconds=5)
+@tasks.loop(hours=2)
 async def webcheck():
     await wch.check(client, config["webcheck_channel_id"])
     
