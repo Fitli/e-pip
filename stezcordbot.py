@@ -91,6 +91,11 @@ async def mark(ctx):
     for msg in messages:
         await mark_random_emoji(msg)
 
+@client.command(name='chcipni')
+async def chcipni(ctx):
+    await ctx.channel.send("Sbohem, krutý světe...")
+    await client.close()
+
 @tasks.loop(hours=2)
 async def webcheck():
     await wch.check(client, config["webcheck_channel_id"])
