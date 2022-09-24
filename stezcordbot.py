@@ -58,6 +58,28 @@ async def vote(ctx):
 @client.command(name='ahoj')
 async def ahoj(ctx, *args):
     await ctx.channel.send(f"Ahoj!\n{args}")
+
+@client.command(name='help')
+async def help(ctx):
+    with open("webcheck/webs.json", "r") as webs:
+        addrs = json.load(webs)
+    addrs = [f"<{addr}>" for addr in addrs]
+    weby = " a ".join(addrs)
+    text = f"""
+Ahoj! Jsem <@{client.user.id}>, stezčí Discord bot.
+
+Momentálně umím příkazy:
+- `.vote` = jednoduché hlasování ano/ne
+- `.anketa` = vezmu všechny emoji obsažené ve zprávě a zareaguju s nimi, abyste mohli pohodlně hlasovat.
+- `.help` vypíše tuto nápovědu
+
+Kromě toho pravidelně sleduju weby {weby}, aby vám nic neuniklo. Pokud by se tam něco změnilo, napíšu do kanálu <#{config["webcheck_channel_id"]}>.
+
+Ještě teda umím odesílat výkony z někdejší výzvy Pionýři do vesmíru, ale to teď už asi není zajímavý.
+
+Můj vývoj má na starosti AS IT, zejména si se mnou hraje Vlk. Kdyby vás napadlo něco, co bych se měl naučit, řekněte jim.
+"""
+    await ctx.channel.send(text)
     
 @client.command(name='vesmir', aliases=['vesmír'])
 async def vesmir(ctx):
