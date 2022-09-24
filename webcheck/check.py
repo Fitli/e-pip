@@ -10,16 +10,12 @@ def myHash(text:str):
     return hash
 
 async def check(client, channel_id):
-    print("check")
     message_channel = client.get_channel(channel_id)
-    print(message_channel)
     
     with open("webcheck/webs.json", "r") as webs:
         state = json.load(webs)
-    print(state)
 
     for addr in state:
-        print(addr)
         h = download(addr)
         if h != state[addr]:
             await message_channel.send(f"Nastala změna na webu {addr}!")
