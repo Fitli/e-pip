@@ -2,15 +2,19 @@ import json
 import sys
 
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 import random
 from vesmir import vesmir_cmd, vesmir_reaction_add
 from anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
+import webcheck.check as wch
 
 intents = discord.Intents.default()
 intents.message_content = True
 client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
+
+with open("config.json") as f:
+    config = json.load(f)
 
 with open("emojis.txt") as f:
     emojis = f.read().split(" ")
@@ -18,6 +22,7 @@ with open("emojis.txt") as f:
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
+    webcheck.start()
 
 async def mark_random_emoji(message):
     emoji = random.choice(emojis)
@@ -64,6 +69,12 @@ async def mark(ctx):
     for msg in messages:
         await mark_random_emoji(msg)
 
+@tasks.loop(seconds=5)
+async def webcheck():
+    await wch.check(client, config["webcheck_channel_id"])
+    
+
+
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -95,7 +106,4 @@ async def on_command_error(ctx, error):
         #await ctx.voice_client.disconnect()
 
 
-with open("config.json") as f:
-    token = json.load(f)["token"]
-
-client.run(token) 
+client.run(config["token"]) 
