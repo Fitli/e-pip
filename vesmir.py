@@ -53,9 +53,9 @@ class Action:
         msg = await self.ctx.channel.send(embed=embed)
         self.msg = msg
         for emoji in MEANS_DICT:
-            await msg.add_reaction(emoji=emoji)
-        await msg.add_reaction(emoji='❌')
-        await msg.add_reaction(emoji='🚀')
+            await msg.add_reaction(emoji)
+        await msg.add_reaction('❌')
+        await msg.add_reaction('🚀')
         open_actions[msg.id] = self
 
     async def reaction_add(self, reaction: discord.Reaction,

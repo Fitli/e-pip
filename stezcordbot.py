@@ -1,13 +1,16 @@
 import json
 import sys
 
+import discord
 from discord.ext import commands
 import random
 from vesmir import vesmir_cmd, vesmir_reaction_add
 from anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
 
-client = commands.Bot(command_prefix=".")
+intents = discord.Intents.default()
+intents.message_content = True
+client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 
 with open("emojis.txt") as f:
     emojis = f.read().split(" ")
@@ -39,23 +42,23 @@ async def custom_on_message(message):
 async def on_reaction_add(reaction, user):
     await vesmir_reaction_add(reaction, user)
     
-@client.command()
+@client.command(name='anketa')
 async def anketa(ctx):
     await anketa_cmd(ctx)
 
-@client.command()
+@client.command(name='vote')
 async def vote(ctx):
     await vote_cmd(ctx)
 
-@client.command()
+@client.command(name='ahoj')
 async def ahoj(ctx, *args):
     await ctx.channel.send(f"Ahoj!\n{args}")
     
-@client.command(aliases=['vesmír'])
+@client.command(name='vesmir', aliases=['vesmír'])
 async def vesmir(ctx):
     await vesmir_cmd(ctx)
 
-@client.command()
+@client.command(name='mark')
 async def mark(ctx):
     messages = await ctx.channel.history(limit=10).flatten()
     for msg in messages:
@@ -94,4 +97,5 @@ async def on_command_error(ctx, error):
 
 with open("config.json") as f:
     token = json.load(f)["token"]
+
 client.run(token) 
