@@ -19,7 +19,7 @@ async def check(client, channel_id):
     for addr in state:
         h = download(addr)
         if h != state[addr]:
-            await message_channel.send(f"Nastala změna na webu {addr}!")
+            await message_channel.send(f"Nastala změna na webu <{addr}>!")
             state[addr] = h
     
     with open("webcheck/webs.json", "w") as webs:
