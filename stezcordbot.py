@@ -72,8 +72,11 @@ Momentálně umím příkazy:
 - `.vote` = jednoduché hlasování ano/ne
 - `.anketa` = vezmu všechny emoji obsažené ve zprávě a zareaguju s nimi, abyste mohli pohodlně hlasovat.
 - `.help` vypíše tuto nápovědu
+- `.sleduj` přidá nový web nebo weby do sledování
+- `.nesleduj` odebere web nebo weby ze sledování
+- `.zkontroluj_weby` zkontroluje okamžitě sledované weby
 
-Kromě toho pravidelně sleduju weby {weby}, aby vám nic neuniklo. Pokud by se tam něco změnilo, napíšu do kanálu <#{config["webcheck_channel_id"]}>.
+Pravidelně sleduju weby {weby}, aby vám nic neuniklo. Pokud by se tam něco změnilo, napíšu do kanálu <#{config["webcheck_channel_id"]}>.
 
 Ještě teda umím odesílat výkony z někdejší výzvy Pionýři do vesmíru, ale to teď už asi není zajímavý.
 
@@ -98,9 +101,19 @@ async def chcipni(ctx):
 
 @tasks.loop(hours=2)
 async def webcheck():
-    await wch.check(client, config["webcheck_channel_id"])
+    await wch.check(client.get_channel(config["webcheck_channel_id"]))
     
+@client.command(name='sleduj')
+async def sleduj(ctx):
+    await wch.sleduj_cmd(ctx)
 
+@client.command(name='nesleduj')
+async def nesleduj(ctx):
+    await wch.nesleduj_cmd(ctx)
+    
+@client.command(name='zkontroluj_weby')
+async def zkontroluj_weby(ctx):
+    await wch.zkontroluj_weby_cmd(ctx)
 
 @client.event
 async def on_command_error(ctx, error):
@@ -109,28 +122,6 @@ async def on_command_error(ctx, error):
     else:
         print(error, file=sys.stderr)
 
-#@client.event
-#async def on_ready():
-    #fp = open("stezbot_fang_500.png", 'rb')
-    #pfp = fp.read()
-    #await client.user.edit(avatar=pfp)
-    
-#@client.command()
-#async def join(ctx):
-    #if message.author == client.user:
-        #return
-    
-    #channel = ctx.author.voice.channel
-    #await channel.connect()
-
-#@client.command()
-#async def leave(ctx):
-    #if message.author == client.user:
-        #return
-    
-    #channel = ctx.author.voice.channel
-    #if len(channel.members) == 1:
-        #await ctx.voice_client.disconnect()
 
 
 client.run(config["token"]) 
