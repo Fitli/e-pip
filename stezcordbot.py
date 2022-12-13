@@ -8,6 +8,7 @@ from vesmir.vesmir import vesmir_cmd, vesmir_reaction_add
 from voting.anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
 import webcheck.check as wch
+import archive.archive as archive
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -23,6 +24,7 @@ with open("voting/emojis.txt") as f:
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     webcheck.start()
+    archive_loop.start()
 
 async def mark_random_emoji(message):
     emoji = random.choice(emojis)
@@ -44,8 +46,10 @@ async def custom_on_message(message):
     await mark_random_emoji(message)
 
 @client.event
-async def on_reaction_add(reaction, user):
+async def on_reaction_add(reaction: discord.Reaction, user):
     await vesmir_reaction_add(reaction, user)
+    if archive.is_archive_msg(reaction.message.id):
+        archive.delete_archivation(reaction.message.id)
     
 @client.command(name='anketa')
 async def anketa(ctx):
@@ -75,6 +79,7 @@ Momentálně umím příkazy:
 - `.sleduj` přidá nový web nebo weby do sledování
 - `.nesleduj` odebere web nebo weby ze sledování
 - `.zkontroluj_weby` zkontroluje okamžitě sledované weby
+- `.archivuj` zaarchivuje kanál, do kterého se pošle příkaz. Ještě to ale může kdokoliv zvrátit.
 
 Pravidelně sleduju weby {weby}, aby vám nic neuniklo. Pokud by se tam něco změnilo, napíšu do kanálu <#{config["webcheck_channel_id"]}>.
 
@@ -102,6 +107,10 @@ async def chcipni(ctx):
 @tasks.loop(hours=2)
 async def webcheck():
     await wch.check(client.get_channel(config["webcheck_channel_id"]))
+
+@tasks.loop(hours=48)
+async def archive_loop():
+    await archive.archive_channels(client)
     
 @client.command(name='sleduj')
 async def sleduj(ctx):
@@ -114,6 +123,10 @@ async def nesleduj(ctx):
 @client.command(name='zkontroluj_weby')
 async def zkontroluj_weby(ctx):
     await wch.zkontroluj_weby_cmd(ctx)
+
+@client.command(name='archivuj')
+async def archivuj(ctx):
+    await archive.archive_cmd(ctx)
 
 @client.event
 async def on_command_error(ctx, error):
