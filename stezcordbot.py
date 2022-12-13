@@ -4,8 +4,8 @@ import sys
 import discord
 from discord.ext import commands, tasks
 import random
-from vesmir import vesmir_cmd, vesmir_reaction_add
-from anketa import anketa_cmd, vote_cmd
+from vesmir.vesmir import vesmir_cmd, vesmir_reaction_add
+from voting.anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
 import webcheck.check as wch
 
@@ -16,7 +16,7 @@ client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 with open("config.json") as f:
     config = json.load(f)
 
-with open("emojis.txt") as f:
+with open("voting/emojis.txt") as f:
     emojis = f.read().split(" ")
 
 @client.event
