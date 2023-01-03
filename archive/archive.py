@@ -32,7 +32,7 @@ def delete_archivation(msg_id: int):
 
 
 async def archive_cmd(ctx: commands.Context):
-    archive_time = datetime.now() + timedelta(seconds=20)
+    archive_time = datetime.now() + timedelta(days=2)
     msg = await ctx.channel.send(
         f"Tento kanál bude v nejbližší době ({archive_time.date()}) archivován. Pokud tomu chcete "
         f"zabránit, dejte libovolnou reakci na tuto zprávu a proces bude zastaven.")
