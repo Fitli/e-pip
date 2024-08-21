@@ -1,1 +1,5 @@
 config.json
+__pycache__
+levitiomail/credentials.json
+levitiomail/token.json
+levitio_links.db

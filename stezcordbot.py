@@ -1,15 +1,18 @@
 import json
 import sys
+import os
+import random
 
 import discord
 from discord.ext import commands, tasks
-import random
+
 from vesmir.vesmir import vesmir_cmd, vesmir_reaction_add
 from voting.anketa import anketa_cmd, vote_cmd
 from simple_interactions import reply_on_mention
 import webcheck.check as wch
 import archive.archive as archive
 from levitiomail.checkmail import check_emails, SignUpButton
+from fotky.fotky import get_album_covers
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -69,21 +72,28 @@ async def ahoj(ctx, *args):
 
 @client.command(name='help')
 async def help(ctx):
-    with open("webcheck/webs.json", "r") as webs:
-        addrs = json.load(webs)
+    addrs = []
+    webcheck_file = "webcheck/webs.json"
+    if os.path.exists(webcheck_file):
+        with open(webcheck_file, "r") as webs:
+            addrs = json.load(webs)
     addrs = [f"<{addr}>" for addr in addrs]
     weby = " a ".join(addrs)
     text = f"""
 Ahoj! Jsem <@{client.user.id}>, stezčí Discord bot.
 
 Momentálně umím příkazy:
-- `.vote` = jednoduché hlasování ano/ne
-- `.anketa` = vezmu všechny emoji obsažené ve zprávě a zareaguju s nimi, abyste mohli pohodlně hlasovat.
+- `.vote` jednoduché hlasování ano/ne
+- `.anketa` vezmu všechny emoji obsažené ve zprávě a zareaguju s nimi, abyste mohli pohodlně hlasovat.
 - `.help` vypíše tuto nápovědu
 - `.sleduj` přidá nový web nebo weby do sledování
 - `.nesleduj` odebere web nebo weby ze sledování
 - `.zkontroluj_weby` zkontroluje okamžitě sledované weby
 - `.archivuj` zaarchivuje kanál, do kterého se pošle příkaz. Ještě to ale může kdokoliv zvrátit.
+- `.fotky` vytvořím html náhledy ze zadaných odkazů (např. z Google fotek, používám OpenGraph) Hodí se na přidávání fotek na náš web
+- `.checkmail` spustí ihned kontrolu emailů z Levitia
+
+Jsem napojený na Levitio a přepisuju do <#{config["mailcheck_channel_id"]}> pozvánky na akce a jiné emaily. Taky tam přidávám tlačítko, kterým se můžete přihlásit na akce.
 
 Pravidelně sleduju weby {weby}, aby vám nic neuniklo. Pokud by se tam něco změnilo, napíšu do kanálu <#{config["webcheck_channel_id"]}>.
 
@@ -112,7 +122,7 @@ async def chcipni(ctx):
 async def checkmail(ctx):
     await check_emails(ctx.channel)
 
-@tasks.loop(minutes=30)
+@tasks.loop(minutes=1)
 async def checkmail_task():
     # print("Checking emails")
     await check_emails(client.get_channel(config["mailcheck_channel_id"]))
@@ -124,6 +134,10 @@ async def webcheck():
 @tasks.loop(hours=48)
 async def archive_loop():
     await archive.archive_channels(client)
+
+@client.command(name='fotky')
+async def fotky(ctx):
+    await get_album_covers(ctx)
 
 @client.command(name='sleduj')
 async def sleduj(ctx):
