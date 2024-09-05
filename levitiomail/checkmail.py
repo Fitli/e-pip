@@ -19,7 +19,9 @@ from sqlitedict import SqliteDict
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/"]
 
-USER_LINK_DB = "levitio_links.db"
+CRED_TOKEN = "credentials/mail_token.json"
+CRED_CRED = "credentials/mail_credentials.json"
+USER_LINK_DB = "data/levitio_links.db"
 PERSONAL_TIMEOUT = 30
 
 
@@ -166,19 +168,19 @@ async def check_emails(channel):
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
   # time.
-  if os.path.exists("levitiomail/token.json"):
-    creds = Credentials.from_authorized_user_file("levitiomail/token.json", SCOPES)
+  if os.path.exists(CRED_TOKEN):
+    creds = Credentials.from_authorized_user_file(CRED_TOKEN, SCOPES)
   # If there are no (valid) credentials available, let the user log in.
   if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
       creds.refresh(Request())
     else:
       flow = InstalledAppFlow.from_client_secrets_file(
-          "levitiomail/credentials.json", SCOPES
+          CRED_CRED, SCOPES
       )
       creds = flow.run_local_server(port=0)
     # Save the credentials for the next run
-    with open("levitiomail/token.json", "w") as token:
+    with open(CRED_TOKEN, "w") as token:
       token.write(creds.to_json())
 
   try:

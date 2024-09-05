@@ -5,12 +5,14 @@ from typing import Dict, Tuple, Optional
 from discord import abc, utils
 from discord.ext import commands
 
+ARCHIVE_FILE = "data/arch_categories.json"
+
 open_archivations: Dict[int, Tuple[datetime, int]] = {}
 
 
 def get_archive_category(channel: abc.GuildChannel) -> Optional[int]:
     category = channel.category.id
-    with open("archive/arch_categories.json", "r") as cats:
+    with open(ARCHIVE_FILE, "r") as cats:
         arch_categories: Dict[str, int] = json.load(cats)
     return arch_categories.get(str(category))
 

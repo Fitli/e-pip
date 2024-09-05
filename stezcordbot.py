@@ -21,6 +21,9 @@ client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 with open("config.json") as f:
     config = json.load(f)
 
+with open("credentials/discord_token.json") as f:
+    token = json.load(f)["token"]
+
 with open("voting/emojis.txt") as f:
     emojis = f.read().split(" ")
 
@@ -122,16 +125,16 @@ async def chcipni(ctx):
 async def checkmail(ctx):
     await check_emails(ctx.channel)
 
-@tasks.loop(minutes=1)
+@tasks.loop(minutes=config["mailcheck_refresh_minutes"])
 async def checkmail_task():
     # print("Checking emails")
     await check_emails(client.get_channel(config["mailcheck_channel_id"]))
 
-@tasks.loop(hours=2)
+@tasks.loop(hours=config["webcheck_refresh_hours"])
 async def webcheck():
     await wch.check(client.get_channel(config["webcheck_channel_id"]))
 
-@tasks.loop(hours=48)
+@tasks.loop(hours=config["archive_hours"])
 async def archive_loop():
     await archive.archive_channels(client)
 
@@ -164,4 +167,4 @@ async def on_command_error(ctx, error):
 
 
 
-client.run(config["token"])
+client.run(token)

@@ -2,6 +2,8 @@ import json
 import requests
 import re
 
+WEBS_FILE = "data/webs_to_check.json"
+
 def myHash(text:str):
     text = re.sub(r'([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?', '', text)
     text = re.sub(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', '', text)
@@ -11,7 +13,7 @@ def myHash(text:str):
     return hash
 
 async def check(message_channel, no_change=False):
-    with open("webcheck/webs.json", "r") as webs:
+    with open(WEBS_FILE, "r") as webs:
         state = json.load(webs)
 
     changed = False
@@ -23,8 +25,8 @@ async def check(message_channel, no_change=False):
             changed = True
     if no_change and not changed:
         await message_channel.send(f"Nenastala žádná změna")
-    
-    with open("webcheck/webs.json", "w") as webs:
+
+    with open(WEBS_FILE, "w") as webs:
         json.dump(state, webs)
 
 def download(addr):
@@ -48,26 +50,26 @@ def get_urls(ctx):
             addr = "http://" + addr
         addrs.append(addr)
     return addrs
-    
+
 
 async def sleduj_cmd(ctx):
     addrs = get_urls(ctx)
     if not addrs:
         await ctx.message.channel.send("Nenašel jsem žádnou validní URL adresu!")
         return
-    
-    with open("webcheck/webs.json", "r") as webs:
+
+    with open(WEBS_FILE, "r") as webs:
         state = json.load(webs)
-    
-    for addr in addrs:  
+
+    for addr in addrs:
         if not addr in state:
             h = download(addr)
             state[addr] = h
             await ctx.message.channel.send(f"Přidávám {addr}.")
         else:
             await ctx.message.channel.send(f"{addr} už sleduju.")
-    
-    with open("webcheck/webs.json", "w") as webs:
+
+    with open(WEBS_FILE, "w") as webs:
         json.dump(state, webs)
 
 
@@ -76,8 +78,8 @@ async def nesleduj_cmd(ctx):
     if not addrs:
         await ctx.message.channel.send("Nenašel jsem žádnou validní URL adresu!")
         return
-    
-    with open("webcheck/webs.json", "r") as webs:
+
+    with open(WEBS_FILE, "r") as webs:
             state = json.load(webs)
 
     for addr in addrs:
@@ -86,8 +88,8 @@ async def nesleduj_cmd(ctx):
             await ctx.message.channel.send(f"Odstraňuju {addr}.")
         else:
             await ctx.message.channel.send(f"{addr} jsem nesledoval.")
-    
-    with open("webcheck/webs.json", "w") as webs:
+
+    with open(WEBS_FILE, "w") as webs:
         json.dump(state, webs)
 
 

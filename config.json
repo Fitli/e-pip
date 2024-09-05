@@ -1,0 +1,22 @@
+{
+    "channel_ids": {
+        "dulezite": 958440548228792341,
+        "vypravy": 1271421295086669844,
+        "spam": 690580744699117571,
+        "porady_voice": 690614260832796832,
+        "schuzky": 764465460221313024,
+        "asit": 761313318618791949,
+        "memes": 763144646121095198,
+        "gaming": 763144646121095198,
+        "gaming_voice": 763049595802091560
+    },
+
+    "mailcheck_channel_id": 1271421295086669844,
+    "mailcheck_refresh_minutes": 30,
+
+    "webcheck_channel_id": 1271421295086669844,
+    "webcheck_refresh_hours": 2,
+
+    "archive_hours": 48
+}
+
