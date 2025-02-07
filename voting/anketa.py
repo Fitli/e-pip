@@ -1,13 +1,17 @@
 import re
-import emojis
+import emoji
 
-#
 async def anketa_cmd(ctx):
-    #custom_emotes = re.findall(r'<a?:.+:\d{18}>', ctx.message.content)
-    classic_emotes = list(emojis.get(ctx.message.content))
-    emotes = re.findall(r'<a?:.+:\d{18}>|' + "|".join(classic_emotes), ctx.message.content)
+    pattern = r'<a?:.+?:\d+?>'
+
+    classic_emotes = emoji.distinct_emoji_list(ctx.message.content)
+    if classic_emotes:
+        pattern += "|" + "|".join(sorted(classic_emotes, key=lambda x: -len(x)))
+
+    emotes = re.findall(pattern, ctx.message.content)
     for emote in emotes:
         await ctx.message.add_reaction(emote)
+
 
 # Simple yes/no vote
 async def vote_cmd(ctx):
