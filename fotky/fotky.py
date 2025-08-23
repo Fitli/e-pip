@@ -9,10 +9,12 @@ async def get_album_covers(ctx):
         covers.append(get_cover_html(url, og))
 
     covers = '\n'.join(covers)
-    await ctx.channel.send(f"""Toto vložte na [web](https://stezka.org/wp-admin/post.php?post=271&action=edit):\n```html\n{covers}\n```""")
+    await ctx.channel.send(f"""Toto vložte na [web](https://stezka.org/wp-admin/post.php?post=271&action=edit) a zaškrtněte fotky v [tabulce](https://docs.google.com/spreadsheets/d/1GURZ_Z6NE7TgClyhxkbgwaRp4qBWTHeGrwpuIqsbSRU/edit?gid=0#gid=0):\n```html\n{covers}\n```""")
 
 def get_cover_html(url, og):
-    return f"""<a class="preview-a" href="{url}"><div class="preview-wrap"><img src="{og['og:image']}"></img><div class="preview-title">{og['og:title']}</div></div></a>"""
+    title = og['og:title'].replace(" [", "<br>[")
+    title = re.sub(r" ·.*", "", title)
+    return f"""<a class="preview-a" href="{url}"><div class="preview-wrap"><img src="{og['og:image']}"></img><div class="preview-title">{title}</div></div></a>"""
 
 
 def get_urls(ctx):
