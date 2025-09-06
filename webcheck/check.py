@@ -7,6 +7,7 @@ WEBS_FILE = "data/webs_to_check.json"
 def myHash(text:str):
     text = re.sub(r'([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?', '', text)
     text = re.sub(r'[0-9]{4}-[0-9]{2}-[0-9]{2}', '', text)
+    text = re.sub(r'.*email-protection.*', '', text)
     hash=0
     for ch in text:
         hash = ( hash*59611  ^ ord(ch)*65543) & 0xFFFFFFFF
