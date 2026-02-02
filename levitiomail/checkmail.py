@@ -14,7 +14,7 @@ import regex
 
 from sqlitedict import SqliteDict
 
-# from markdownify import markdownify as md
+import html2text
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/"]
@@ -23,6 +23,14 @@ CRED_TOKEN = "credentials/mail_token.json"
 CRED_CRED = "credentials/mail_credentials.json"
 USER_LINK_DB = "data/levitio_links.db"
 PERSONAL_TIMEOUT = 30
+
+
+h2t = html2text.HTML2Text()
+h2t.ignore_images = True
+h2t.body_width = 0
+h2t.ignore_tables = True
+h2t.single_line_break = True
+h2t.ignore_mailto_links = True
 
 
 class SignUpButton(discord.ui.View):
@@ -134,11 +142,15 @@ async def post_email(data, channel):
     )
 
 def convert_mail(html):
-    converted = subprocess.check_output(
-        ["html2text", "--ignore-images", "-b", "0", "--ignore-tables", "--single-line-break", "--ignore-mailto-links"],
-        input=html,
-        encoding="utf-8",
-    )
+    # with open("mail.html", "w") as f:
+    #     f.write(html)
+    # subprocess.check_output(
+    #     ["/home/peta/.local/bin/html2text", "--ignore-images", "-b", "0", "--ignore-tables", "--single-line-break", "--ignore-mailto-links"],
+    #     input=html,
+    #     encoding="utf-8",
+    # )
+
+    converted = h2t.handle(html)
     if "* * *" in converted:
         converted = converted.split("* * *")[0]
     # converted = converted.replace(" **", "**")
@@ -161,9 +173,6 @@ def convert_mail(html):
     return converted
 
 async def check_emails(channel):
-  """Shows basic usage of the Gmail API.
-  Lists the user's Gmail labels.
-  """
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
