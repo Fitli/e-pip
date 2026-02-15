@@ -19,9 +19,9 @@ import html2text
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://mail.google.com/"]
 
-CRED_TOKEN = "credentials/mail_token.json"
-CRED_CRED = "credentials/mail_credentials.json"
-USER_LINK_DB = "data/levitio_links.db"
+CRED_TOKEN = "persistent/credentials/mail_token.json"
+CRED_CRED = "persistent/credentials/mail_credentials.json"
+USER_LINK_DB = "persistent/data/levitio_links.db"
 PERSONAL_TIMEOUT = 30
 
 

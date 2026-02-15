@@ -2,7 +2,7 @@ import json
 import requests
 import re
 
-WEBS_FILE = "data/webs_to_check.json"
+WEBS_FILE = "persistent/data/webs_to_check.json"
 
 def myHash(text:str):
     text = re.sub(r'([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?', '', text)
@@ -13,9 +13,12 @@ def myHash(text:str):
         hash = ( hash*59611  ^ ord(ch)*65543) & 0xFFFFFFFF
     return hash
 
+def get_state():
+     with open(WEBS_FILE, "r") as webs:
+        return json.load(webs)
+
 async def check(message_channel, no_change=False):
-    with open(WEBS_FILE, "r") as webs:
-        state = json.load(webs)
+    state = get_state()
 
     changed = False
     for addr in state:

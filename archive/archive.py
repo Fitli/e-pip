@@ -5,7 +5,7 @@ from typing import Dict, Tuple, Optional
 from discord import abc, utils
 from discord.ext import commands
 
-ARCHIVE_FILE = "data/arch_categories.json"
+ARCHIVE_FILE = "persistent/data/arch_categories.json"
 
 open_archivations: Dict[int, Tuple[datetime, int]] = {}
 

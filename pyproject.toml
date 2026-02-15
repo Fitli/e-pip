@@ -1,0 +1,18 @@
+[project]
+name = "epip"
+version = "1.0.0"
+description = "E-Pip: a Discord bot for Stezka"
+requires-python = "==3.13.*"
+dependencies = [
+  "discord.py",
+  "regex",
+  "requests",
+  "sqlitedict",
+  "emoji",
+  "html2text",
+  "opengraph_parse",
+
+  "google-api-python-client",
+  "google-auth-httplib2",
+  "google-auth-oauthlib"
+]

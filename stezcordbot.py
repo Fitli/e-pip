@@ -21,7 +21,7 @@ client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 with open("config.json") as f:
     config = json.load(f)
 
-with open("credentials/discord_token.json") as f:
+with open("persistent/credentials/discord_token.json") as f:
     token = json.load(f)["token"]
 
 with open("voting/emojis.txt") as f:
@@ -75,12 +75,7 @@ async def ahoj(ctx, *args):
 
 @client.command(name='help')
 async def help(ctx):
-    addrs = []
-    webcheck_file = "webcheck/webs.json"
-    if os.path.exists(webcheck_file):
-        with open(webcheck_file, "r") as webs:
-            addrs = json.load(webs)
-    addrs = [f"<{addr}>" for addr in addrs]
+    addrs = [f"<{addr}>" for addr in wch.get_state().keys()]
     weby = " a ".join(addrs)
     text = f"""
 Ahoj! Jsem <@{client.user.id}>, stezčí Discord bot.

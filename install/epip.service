@@ -1,0 +1,16 @@
+[Unit]
+Description=Python discord bot for Stezka
+Wants=network-online.target
+After=network-online.target nss-lookup.target
+
+[Service]
+Type=simple
+WorkingDirectory=/home/peta/epip
+ExecStart=/home/peta/.local/bin/uv run /home/peta/epip/stezcordbot.py
+User=peta
+
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
