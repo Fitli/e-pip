@@ -18,7 +18,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = commands.Bot(command_prefix='.', intents=intents, help_command=None)
 
-with open("config.json") as f:
+with open("persistent/config.json") as f:
     config = json.load(f)
 
 with open("persistent/credentials/discord_token.json") as f:
