@@ -69,6 +69,13 @@ async def anketa(ctx):
 async def vote(ctx):
     await vote_cmd(ctx)
 
+@client.command(name='remind')
+async def remind(ctx, *, text: str = ''):
+    await ctx.message.delete()
+    if not text:
+        text = "se jmenuji E-Pip?"
+    await ctx.send(f'Věděli jste, že {text}')
+
 @client.command(name='ahoj')
 async def ahoj(ctx, *args):
     await ctx.channel.send(f"Ahoj!\n{args}")
