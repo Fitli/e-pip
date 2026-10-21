@@ -8,6 +8,7 @@ Type=simple
 WorkingDirectory=/home/peta/epip
 ExecStart=/home/peta/.local/bin/uv run /home/peta/epip/stezcordbot.py
 User=peta
+Environment=PYTHONUNBUFFERED=1
 
 Restart=always
 RestartSec=10

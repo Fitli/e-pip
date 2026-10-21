@@ -13,6 +13,7 @@ import webcheck.check as wch
 import archive.archive as archive
 from levitiomail.checkmail import check_emails, SignUpButton
 from fotky.fotky import get_album_covers
+import dockerwatch.dockerwatch as dockerwatch
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -33,6 +34,8 @@ async def on_ready():
     checkmail_task.start()
     webcheck.start()
     archive_loop.start()
+    if config.get("dockerwatch_user_id"):
+        dockerwatch.start(client, config["dockerwatch_user_id"])
 
     client.add_view(SignUpButton())
 
