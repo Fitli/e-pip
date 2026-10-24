@@ -35,7 +35,7 @@ async def on_ready():
     webcheck.start()
     archive_loop.start()
     if config.get("dockerwatch_user_id"):
-        dockerwatch.start(client, config["dockerwatch_user_id"])
+        dockerwatch.start(client, config["dockerwatch_user_id"], config.get("dockerwatch_stop", []))
 
     client.add_view(SignUpButton())
 
